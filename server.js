@@ -4,6 +4,7 @@ const ytdl = require('ytdl-core');
 
 const app = express();
 const port = 3000;
+const host = 0.0.0.0;
 
 app.use(express.json());
 
@@ -252,6 +253,6 @@ app.get('/download/yt/:formatConvert/:formatOriginal/:indexData', async (req, re
  }
 })
 
-app.listen(port, () => {
+app.listen(port, host, () => {
  console.log(`Server 2 berjalan di http://localhost:${port}`);
 });
