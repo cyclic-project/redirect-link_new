@@ -232,7 +232,7 @@ app.get('/download/yt/:formatConvert/:formatOriginal/:indexData', async (req, re
   }
  });
 
-  console.log(getDataByValue(`${formatOriginal};${indexData}`))
+  // console.log(getDataByValue(`${formatOriginal};${indexData}`))
  if (infoFormat1 && getDataByValue(`${formatOriginal};${indexData}`)) {
    if (getDataByValue(`${formatOriginal};${indexData}`).audioTrack) {
     res.header('Content-Disposition', `attachment; filename="(${getDataByValue(`${formatOriginal};${indexData}`).audioTrack.displayName}) ${info.videoDetails.title}.${formatConvert}"`);
