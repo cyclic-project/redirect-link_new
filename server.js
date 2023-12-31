@@ -4,7 +4,7 @@ const ytdl = require('ytdl-core');
 
 const app = express();
 const port = 3000;
-const host = 0.0.0.0;
+const host = '0.0.0.0';
 
 app.use(express.json());
 
