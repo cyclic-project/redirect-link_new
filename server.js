@@ -240,7 +240,7 @@ app.get('/download/yt/:formatConvert/:formatOriginal/:indexData', async (req, re
     res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.${formatConvert}"`);
    }
   await ytdl(urlVideo, { format: getDataByValue(`${formatOriginal};${indexData}`) }).pipe(res);
-  res.redirect('https://downloader.marsell.tech/?nextState=done')
+  // res.redirect('https://downloader.marsell.tech/?nextState=done')
   // getDataByValue(`${formatOriginal};${indexData}`).url
   // let aTag = document.createElement('a')
   // aTag.href = 
