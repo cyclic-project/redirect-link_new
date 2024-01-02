@@ -243,7 +243,7 @@ app.get('/download/:platform/:formatConvert/:formatOriginal/:indexData', async (
     const videoFormat = getDataByValue(`${formatOriginal};${indexData}`);
     const fileName = `${info.videoDetails.title}.${formatConvert}`;
 
-    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${info.videoDetails.title}.${formatConvert}"`);
     res.setHeader('Content-Type', videoFormat.mimeType);
 
     // Pipe the file to the response
