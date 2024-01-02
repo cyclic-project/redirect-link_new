@@ -1,12 +1,14 @@
 const express = require('express');
 const fs = require('fs/promises');
 const ytdl = require('ytdl-core');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
 const host = '0.0.0.0';
 
 app.use(express.json());
+app.use(cors());
 
 app.get('/', (req, res) => {
  res.send('Path no found')
