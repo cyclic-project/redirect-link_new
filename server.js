@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs/promises');
 const ytdl = require('ytdl-core');
 const cors = require('cors');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 
 const app = express();
 const port = 3000;
@@ -10,8 +10,8 @@ const host = '0.0.0.0';
 
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
  res.send('Path no found')
