@@ -181,76 +181,83 @@ app.get('/getdata', async (req, res) => {
 });
 
 // DOWNLOADER
-app.get('/download/yt/:formatConvert/:formatOriginal/:indexData', async (req, res) => {
+app.get('/download/:platform/:formatConvert/:formatOriginal/:indexData', async (req, res) => {
  const { formatConvert, formatOriginal, indexData } = req.params
  const { urlVideo } = req.query
- const containerData = {
-  mp4: [],
-  mp3: [],
-  webm: []
- };
- const info = await ytdl.getInfo(urlVideo)
- var infoFormat = info.formats
+ if (req.params.platform == "yt") {
+  try {
+   const containerData = {
+    mp4: [],
+    mp3: [],
+    webm: []
+   };
+   const info = await ytdl.getInfo(urlVideo)
+   var infoFormat = info.formats
 
- function getDataByValue(value) {
-  const [type, indexStr] = value.split(';');
-  const index = parseInt(indexStr, 10);
+   function getDataByValue(value) {
+    const [type, indexStr] = value.split(';');
+    const index = parseInt(indexStr, 10);
 
-  if (containerData[type] && containerData[type][index]) {
-   return containerData[type][index];
-  } else {
-   return null; // Handle invalid type or index
-  }
- }
-
- var infoFormat1 = infoFormat.filter(video => {
-  const isSupportedType = ['mp4', 'mp3', 'webm'].includes(video.container)
-  const isAvc1Codec = video.codecs.startsWith('avc1');
-  return isSupportedType && isAvc1Codec && video.audioQuality !== 'AUDIO_QUALITY_LOW';
- })
- const hasAudio = infoFormat1.some(video => ['mp4', 'webm'].includes(video.container) && video.hasAudio);
- const hasMp4AudioOnly = infoFormat1.some(video => video.container === 'mp4' && !video.hasVideo);
- if (!hasAudio) {
-  const mediumAudioFiles = infoFormat.filter(video => video.container === 'mp3' || (video.container === 'webm' && video.audioQuality === 'AUDIO_QUALITY_MEDIUM'));
-  infoFormat1.push(...mediumAudioFiles);
- }
- if (!hasMp4AudioOnly) {
-  const audioOnlyFiles = infoFormat.filter(video => video.container === 'mp3' || (video.container === 'webm' && !video.hasVideo));
-  infoFormat1.push(...audioOnlyFiles);
- }
-
- infoFormat1.forEach(item => {
-  if (item.container == "mp4") {
-   if (item.audioQuality == "AUDIO_QUALITY_MEDIUM" && !item.qualityLabel) {
-    containerData.mp3.push(item)
-   } else {
-    containerData.mp4.push(item)
+    if (containerData[type] && containerData[type][index]) {
+     return containerData[type][index];
+    } else {
+     return null; // Handle invalid type or index
+    }
    }
-  }
-  if (item.container == "webm") {
-   containerData.webm.push(item)
-  }
- });
 
-  // console.log(getDataByValue(`${formatOriginal};${indexData}`))
- if (infoFormat1 && getDataByValue(`${formatOriginal};${indexData}`)) {
-   if (getDataByValue(`${formatOriginal};${indexData}`).audioTrack) {
-    res.header('Content-Disposition', `attachment; filename="(${getDataByValue(`${formatOriginal};${indexData}`).audioTrack.displayName}) ${info.videoDetails.title}.${formatConvert}"`);
-   } else {
-    res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.${formatConvert}"`);
+   var infoFormat1 = infoFormat.filter(video => {
+    const isSupportedType = ['mp4', 'mp3', 'webm'].includes(video.container)
+    const isAvc1Codec = video.codecs.startsWith('avc1');
+    return isSupportedType && isAvc1Codec && video.audioQuality !== 'AUDIO_QUALITY_LOW';
+   })
+   const hasAudio = infoFormat1.some(video => ['mp4', 'webm'].includes(video.container) && video.hasAudio);
+   const hasMp4AudioOnly = infoFormat1.some(video => video.container === 'mp4' && !video.hasVideo);
+   if (!hasAudio) {
+    const mediumAudioFiles = infoFormat.filter(video => video.container === 'mp3' || (video.container === 'webm' && video.audioQuality === 'AUDIO_QUALITY_MEDIUM'));
+    infoFormat1.push(...mediumAudioFiles);
    }
-  await ytdl(urlVideo, { format: getDataByValue(`${formatOriginal};${indexData}`) }).pipe(res);
-  // res.redirect('https://downloader.marsell.tech/?nextState=done')
-  // getDataByValue(`${formatOriginal};${indexData}`).url
-  // let aTag = document.createElement('a')
-  // aTag.href = 
-  // fetch(getDataByValue(`${formatOriginal};${indexData}`).url).then(res => res.blob()).then(file => {
-  //  let tempUrl = URL.createObjectURL(file);
-  //  console.log(tempUrl)
-  // })
-  // res.redirect('/')
- } else {
-  res.redirect('/?error=url_process_error')
+   if (!hasMp4AudioOnly) {
+    const audioOnlyFiles = infoFormat.filter(video => video.container === 'mp3' || (video.container === 'webm' && !video.hasVideo));
+    infoFormat1.push(...audioOnlyFiles);
+   }
+
+   infoFormat1.forEach(item => {
+    if (item.container == "mp4") {
+     if (item.audioQuality == "AUDIO_QUALITY_MEDIUM" && !item.qualityLabel) {
+      containerData.mp3.push(item)
+     } else {
+      containerData.mp4.push(item)
+     }
+    }
+    if (item.container == "webm") {
+     containerData.webm.push(item)
+    }
+   });
+
+   if (infoFormat && getDataByValue(`${formatOriginal};${indexData}`)) {
+    const videoFormat = getDataByValue(`${formatOriginal};${indexData}`);
+    const fileName = `${info.videoDetails.title}.${formatConvert}`;
+
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    res.setHeader('Content-Type', videoFormat.mimeType);
+
+    // Pipe the file to the response
+    ytdl(urlVideo, { format: videoFormat }).pipe(res);
+   } else {
+    // Send an error response if needed
+    res.status(400).json({
+     status: 'error',
+     message: 'URL process error.'
+    });
+   }
+  } catch (error) {
+   console.error(error);
+   // Send an error response if needed
+   res.status(500).json({
+    status: 'error',
+    message: 'Internal server error.'
+   });
+  }
  }
 })
 
