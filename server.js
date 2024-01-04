@@ -41,9 +41,9 @@ function checkDataType(data) {
  return result;
 }
 
+  await client.connect();
 async function writeDataToDatabase(jsonData, tableName) {
  try {
-  await client.connect();
   var dataCheck = checkDataType(jsonData[0])
   var configNewTable;
   for (const data in dataCheck) {
