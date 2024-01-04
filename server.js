@@ -41,7 +41,7 @@ function checkDataType(data) {
  return result;
 }
 
-  await client.connect();
+client.connect();
 async function writeDataToDatabase(jsonData, tableName) {
  try {
   var dataCheck = checkDataType(jsonData[0])
