@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs/promises');
 const ytdl = require('ytdl-core');
 const cors = require('cors');
+const { Client } = require('pg');
 // const bodyParser = require('body-parser');
 
 const app = express();
@@ -12,6 +13,108 @@ app.use(express.json());
 app.use(cors());
 // app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
+
+function wait(ms) {
+ return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const connectionString = 'postgres://marsel:2e7cDKt49xYEkgsONFdO4Wtxul3uI04N@dpg-cmb72bta73kc73bq6g2g-a.singapore-postgres.render.com/marsel';
+
+const client = new Client({
+ connectionString: connectionString,
+ ssl: {
+  rejectUnauthorized: false, // Tambahkan opsi ini jika menggunakan SSL
+ },
+});
+
+function checkDataType(data) {
+ const result = {};
+ for (const key in data) {
+  if (typeof data[key] === "string") {
+   result[`${key} VARCHAR(255)`] = ""
+  } else if (typeof data[key] === "number") {
+   result[`${key} INT`] = ""
+  } else {
+   result[key] = "number";
+  }
+ }
+ return result;
+}
+
+async function writeDataToDatabase(jsonData, tableName) {
+ try {
+  await client.connect();
+  var dataCheck = checkDataType(jsonData[0])
+  var configNewTable;
+  for (const data in dataCheck) {
+   configNewTable += `${data}\n`
+  }
+
+  await getData(tableName, 'check')
+
+  for (const data of jsonData) {
+   const query = {
+    text: 'INSERT INTO sessionCode(platform, code, "limit", date, maxLimit, name, unlimited, remainLimits) VALUES($1, $2, $3, $4, $5, $6, $7, $8)',
+    values: [data.platform, data.code, data.limit, data.date, data.maxLimit, data.name, data.unlimited, data.remainLimits],
+   };
+
+   await client.query(query);
+  }
+
+  console.log('Data has been successfully written to postgresql.');
+ } catch (error) {
+  console.error('Error writing data to table:', error);
+ } finally {
+  // await client.end();
+ }
+}
+
+async function getData(tableName, type) {
+ try {
+  // await client.connect();
+
+
+  const checkTableQuery = await client.query(`
+  SELECT to_regclass('public.sessionCode') IS NOT NULL AS table_exists;
+  `)
+
+  if (checkTableQuery.rows[0].table_exists) {
+   const getDataQuery = await client.query(`SELECT * FROM ${tableName}`);
+
+   if (type) {
+    client.query(`DELETE FROM ${tableName}`)
+    return client.query(`
+     SELECT setval(pg_get_serial_sequence('sessionCode', 'id'), coalesce(max(id), 1), false)
+     FROM ${tableName};
+    `)
+   }
+   return getDataQuery.rows
+  } else {
+   const createTableQuery = `
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+          id SERIAL PRIMARY KEY,
+          platform VARCHAR(255),
+          code VARCHAR(255),
+          "limit" INT,
+          date VARCHAR(255),
+          maxLimit INT,
+          name VARCHAR(255),
+          unlimited INT,
+          remainLimits INT
+        );
+      `;
+
+   await client.query(createTableQuery);
+
+   console.log('Table "sessionCode" has been created.');
+  }
+
+ } catch (error) {
+  console.error('Error creating table:', error);
+ } finally {
+  // await client.end();
+ }
+}
 
 app.get('/', (req, res) => {
  res.send('Path no found')
@@ -306,6 +409,8 @@ app.post('/manageLimit', async (req, res) => {
     codeObject.maxLimit = (configData.maxLimit) ? parseInt(configData.maxLimit) : codeObject.maxLimit;
     message = `Set MaxLimit to ${codeObject.maxLimit} Successfully`
    }
+
+   writeDataToDatabase(data, 'sessionCode')
    await saveToJsonFile(data, 'limits_download.json')
 
    res.status(200).json({ message });
@@ -351,6 +456,7 @@ app.post('/getLimit/:platform', async (req, res) => {
     res.json({ limit: foundItem.limit });
    }
    saveToJsonFile(data, 'limits_download.json');
+   writeDataToDatabase(data, 'sessionCode')
   } else {
    res.status(404).json({ error: 'Code not found' });
   }
@@ -376,6 +482,7 @@ app.post('/updateCodeLimit/:platform', async (req, res) => {
    if (codeObject.unlimited == "1") {
     codeObject.limit = 0;
     saveToJsonFile(data, 'limits_download.json')
+    writeDataToDatabase(data, 'sessionCode')
     res.status(200).json({ success: true, unlimited: 1 })
    } else {
     if (newLimit <= 10) {
@@ -383,6 +490,7 @@ app.post('/updateCodeLimit/:platform', async (req, res) => {
      codeObject.remainLimits = codeObject.maxLimit - newLimit
 
      saveToJsonFile(data, 'limits_download.json');
+     writeDataToDatabase(data, 'sessionCode')
 
      res.status(200).json({ success: true, limit: newLimit, maxLimit: codeObject.maxLimit });
     } else {
@@ -426,6 +534,7 @@ app.post('/generate_code/:platform', async (req, res) => {
  });
 
  saveToJsonFile(dataLimits, 'limits_download.json');
+ writeDataToDatabase(dataLimits, 'sessionCode')
 
  res.json({ code: randomCode });
 });
