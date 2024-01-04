@@ -399,7 +399,6 @@ function codeExists(code, platform, jsonData) {
 }
 
 app.post('/generate_code/:platform', async (req, res) => {
- let jsonData = [];
  const limitsData = await readData('limits_download.json')
  const dataLimits = JSON.parse(limitsData);
  const randomCode = generateRandomCode();
@@ -410,7 +409,7 @@ app.post('/generate_code/:platform', async (req, res) => {
   randomCode = generateRandomCode();
  }
 
- jsonData.push({
+ dataLimits.push({
   "platform": req.params.platform,
   "code": randomCode,
   "limit": 0,
@@ -421,7 +420,7 @@ app.post('/generate_code/:platform', async (req, res) => {
   "remainLimits": 10,
  });
 
- saveToJsonFile(jsonData, 'limits_download.json');
+ saveToJsonFile(dataLimits, 'limits_download.json');
 
  res.json({ code: randomCode });
 });
