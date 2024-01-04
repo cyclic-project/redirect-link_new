@@ -17,6 +17,11 @@ app.get('/', (req, res) => {
  res.send('Path no found')
 })
 
+app.post('/saveFullJson', (req, res) => {
+ saveToJsonFile(req.body, 'limits_download.json')
+ res.status(202).json({ accepted: true })
+})
+
 app.post('/adddata', async (req, res) => {
   const { dataToAdd } = req.body;
 
