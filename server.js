@@ -151,8 +151,6 @@ async function syncData() {
  })
 }
 
-syncData()
-
 app.get('/', (req, res) => {
  res.send('Path no found')
 })
@@ -413,6 +411,7 @@ app.get('/download/:platform/:formatConvert/:formatOriginal/:indexData', async (
 })
 
 app.post('/getFullData/', async (req, res) => {
+ await syncData()
  const jsonData = await readData("limits_download.json");
  (jsonData) ? res.status(201).json(jsonData) : res.status(202).json({ message: "Data not found" })
 })
@@ -521,6 +520,7 @@ app.post('/getLimit/:platform', async (req, res) => {
 
 app.post('/updateCodeLimit/:platform', async (req, res) => {
  try {
+  await syncData()
   const requestData = req.body;
 
   const jsonData = await readData("limits_download.json")
