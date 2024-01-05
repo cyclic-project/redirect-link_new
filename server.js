@@ -148,6 +148,8 @@ async function syncData() {
  })
 }
 
+syncData()
+
 app.get('/', (req, res) => {
  res.send('Path no found')
 })
