@@ -411,7 +411,7 @@ app.get('/download/:platform/:formatConvert/:formatOriginal/:indexData', async (
 })
 
 app.post('/getFullData/', async (req, res) => {
- await syncData()
+ // await syncData()
  const jsonData = await readData("limits_download.json");
  (jsonData) ? res.status(201).json(jsonData) : res.status(202).json({ message: "Data not found" })
 })
@@ -463,7 +463,7 @@ app.post('/manageLimit', async (req, res) => {
   `)
    await saveToJsonFile(data, 'limits_download.json')
    // console.log('Done writing to file: ', await readData('limits_download.json'))
-   await syncData()
+   // await syncData()
 
    res.status(200).json({ message });
   } else {
@@ -520,7 +520,7 @@ app.post('/getLimit/:platform', async (req, res) => {
 
 app.post('/updateCodeLimit/:platform', async (req, res) => {
  try {
-  await syncData()
+  // await syncData()
   const requestData = req.body;
 
   const jsonData = await readData("limits_download.json")
