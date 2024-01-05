@@ -413,7 +413,7 @@ app.post('/manageLimit', async (req, res) => {
    await writeDataToDatabase(data, 'sessionCode')
    console.log('Done writing to database: ', await getData('sessionCode'))
    client.query(`
-   DELETE FROM 'sessionCode'
+   DELETE FROM sessionCode
    WHERE id IS NULL OR
    platform IS NULL OR
    code IS NULL OR
