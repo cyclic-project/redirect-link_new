@@ -20,6 +20,14 @@ function wait(ms) {
  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
+// POSTGRESQL (DATABASE)
 const connectionString = 'postgres://marsel:2e7cDKt49xYEkgsONFdO4Wtxul3uI04N@dpg-cmb72bta73kc73bq6g2g-a.singapore-postgres.render.com/marsel';
 
 const client = new Client({
@@ -150,6 +158,8 @@ async function syncData() {
   return console.log('Done syncronizing with Datbaase')
  })
 }
+
+// ==========================================================
 
 app.get('/', (req, res) => {
  res.send('Path no found')
