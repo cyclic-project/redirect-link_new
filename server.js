@@ -410,8 +410,10 @@ app.post('/manageLimit', async (req, res) => {
     message = `Set MaxLimit to ${codeObject.maxLimit} Successfully`
    }
 
-   writeDataToDatabase(data, 'sessionCode')
+   await writeDataToDatabase(data, 'sessionCode')
+   console.log('Done writing to database: ', await getData('sessionCode'))
    await saveToJsonFile(data, 'limits_download.json')
+   console.log('Done writing to file: ', readData('limits_download.json'))
 
    res.status(200).json({ message });
   } else {
