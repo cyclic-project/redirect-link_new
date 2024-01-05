@@ -116,6 +116,38 @@ async function getData(tableName, type) {
  }
 }
 
+async function syncData() {
+ axios({
+  method: 'post',
+  url: `${urlBackend}/getFullData`,
+ }).then(async function (response) {
+  if (response.data.message) return console.log("Error")
+  if (response.data.length < 6) {
+   console.log("Can't get latest data, syncronizing...")
+   wait(2000)
+   var dataSession = await getData('sessionCode')
+   await axios({
+    method: 'post',
+    url: `${urlBackend}/saveFullJson`,
+    data: dataSession,
+   }).then(async function (res) {
+    if (res.status == 202) {
+     console.log("Done saving full json!")
+    }
+   })
+   fullDataSessionn = dataSession
+   return console.log("Done syncronizing database to temp file!")
+  }
+  const data = JSON.parse(response.data)
+  writeDataToDatabase(data, 'sessionCode')
+  if (response.data.length > 15) {
+   
+  }
+  fullDataSessionn = data
+  return console.log('Done syncronizing with Datbaase')
+ })
+}
+
 app.get('/', (req, res) => {
  res.send('Path no found')
 })
@@ -411,7 +443,7 @@ app.post('/manageLimit', async (req, res) => {
    }
 
    await writeDataToDatabase(data, 'sessionCode')
-   console.log('Done writing to database: ', await getData('sessionCode'))
+   // console.log('Done writing to database: ', await getData('sessionCode'))
    client.query(`
    DELETE FROM sessionCode
    WHERE id IS NULL OR
@@ -426,7 +458,7 @@ app.post('/manageLimit', async (req, res) => {
    maxLimit IS NULL;
    `)
    await saveToJsonFile(data, 'limits_download.json')
-   console.log('Done writing to file: ', await readData('limits_download.json'))
+   // console.log('Done writing to file: ', await readData('limits_download.json'))
 
    res.status(200).json({ message });
   } else {
