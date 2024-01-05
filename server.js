@@ -444,21 +444,22 @@ app.post('/manageLimit', async (req, res) => {
 
    await writeDataToDatabase(data, 'sessionCode')
    // console.log('Done writing to database: ', await getData('sessionCode'))
-   client.query(`
-   DELETE FROM sessionCode
-   WHERE id IS NULL OR
-   platform IS NULL OR
-   code IS NULL OR
-   "limit" IS NULL OR
-   date IS NULL OR
-   maxlimit IS NULL OR
-   name IS NULL OR
-   unlimited IS NULL OR
-   remainlimits IS NULL OR
-   maxLimit IS NULL;
-   `)
+   await client.query(`
+  UPDATE sessionCode
+  SET 
+  id = COALESCE(id, 0),
+  platform = COALESCE(platform, ''),
+  code = COALESCE(code, ''),
+  "limit" = COALESCE("limit", 0),
+  date = COALESCE(date, ''),
+  maxlimit = COALESCE(maxlimit, 0),
+  name = COALESCE(name, ''),
+  unlimited = COALESCE(unlimited, 0),
+  remainlimits = COALESCE(remainlimits, 0);
+  `)
    await saveToJsonFile(data, 'limits_download.json')
    // console.log('Done writing to file: ', await readData('limits_download.json'))
+   await syncData()
 
    res.status(200).json({ message });
   } else {
