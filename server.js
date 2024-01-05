@@ -123,6 +123,7 @@ async function syncData() {
   method: 'post',
   url: `${urlBackend}/getFullData`,
  }).then(async function (response) {
+  console.log(response.data)
   if (response.data.message) return console.log("Error")
   if (response.data.length < 6) {
    console.log("Can't get latest data, syncronizing...")
