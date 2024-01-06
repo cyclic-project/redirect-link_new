@@ -12,7 +12,11 @@ const port = 3000;
 const host = '0.0.0.0';
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://downloader.marsell.tech', // Allow requests from this origin
+  methods: ['GET', 'POST'], // Specify the allowed HTTP methods (add 'POST' to the array)
+  optionsSuccessStatus: 204, // Set the status code for successful preflight requests
+}));
 // app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
 
