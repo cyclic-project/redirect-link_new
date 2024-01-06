@@ -3,7 +3,7 @@ const fs = require('fs/promises');
 const ytdl = require('ytdl-core');
 const cors = require('cors');
 const { Client } = require('pg');
-const axios = require('axios');
+// const axios = require('axios');
 // const bodyParser = require('body-parser');
 var urlBackend = "https://render-backend.marsell.tech"
 
@@ -12,11 +12,11 @@ const port = 3000;
 const host = '0.0.0.0';
 
 app.use(express.json());
-app.use(cors({
-  origin: ['https://downloader.marsell.tech', 'http://localhost:3000'], 
-  methods: ['GET', 'POST'],
-  optionsSuccessStatus: 204,
-}));
+// app.use(cors({
+//   origin: ['https://downloader.marsell.tech', 'http://localhost:3000'], 
+//   methods: ['GET', 'POST'],
+//   optionsSuccessStatus: 204,
+// }));
 // app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
 
