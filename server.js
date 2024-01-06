@@ -457,6 +457,7 @@ app.post('/manageLimit', async (req, res) => {
    }
    if (option == "set") {
     codeObject.maxLimit = (configData.maxLimit) ? parseInt(configData.maxLimit) : codeObject.maxLimit;
+    codeObject.remainlimits = codeObject.maxLimit - codeObject.limit
     message = `Set MaxLimit to ${codeObject.maxLimit} Successfully`
    }
 
