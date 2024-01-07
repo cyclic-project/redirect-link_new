@@ -120,7 +120,7 @@ async function getData(tableName, type) {
           maxLimit INT,
           name VARCHAR(255),
           unlimited INT,
-          remainLimits INT
+          remainlimits INT
         );
       `;
 
