@@ -479,7 +479,7 @@ app.post('/manageLimit', async (req, res) => {
     date = COALESCE(date, ''),
     maxlimit = COALESCE(maxlimit, 0),
     remainlimits = COALESCE(remainlimits, 0),
-    unlimited = COALESCE(unlimited, 0), 
+    unlimited = COALESCE(unlimited, CAST(0 AS INTEGER)),
     name = COALESCE(name, '');
    `);
    await saveToJsonFile(data, 'limits_download.json')
