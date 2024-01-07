@@ -522,8 +522,8 @@ app.post('/getLimit/:platform', async (req, res) => {
 
   if (foundItem) {
    if (isSameDate(currentDate, foundItem.date)) {
-    foundItem.remainLimits = foundItem.maxLimit - foundItem.limit
-    res.json({ limit: foundItem.limit, remainLimits: foundItem.remainLimits, unlimitedd: foundItem.unlimited });
+    foundItem.remainlimits = foundItem.maxLimit - foundItem.limit
+    res.json({ limit: foundItem.limit, remainLimits: foundItem.remainlimits, unlimitedd: foundItem.unlimited });
    } else {
     foundItem.limit = 0;
     foundItem.date = currentDate;
@@ -563,7 +563,7 @@ app.post('/updateCodeLimit/:platform', async (req, res) => {
    } else {
     if (newLimit <= 10) {
      codeObject.limit = newLimit;
-     codeObject.remainLimits = codeObject.maxLimit - newLimit
+     codeObject.remainlimits = codeObject.maxLimit - newLimit
 
      saveToJsonFile(data, 'limits_download.json');
      writeDataToDatabase(data, 'sessionCode')
