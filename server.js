@@ -604,7 +604,7 @@ app.post('/generate_code/:platform', async (req, res) => {
   "maxLimit": 10,
   "name": "",
   "unlimited": 0,
-  "remainLimits": 10,
+  "remainlimits": 10,
  });
 
  saveToJsonFile(dataLimits, 'limits_download.json');
