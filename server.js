@@ -522,7 +522,7 @@ app.post('/getLimit/:platform', async (req, res) => {
 
   if (foundItem) {
    if (isSameDate(currentDate, foundItem.date)) {
-    foundItem.remainlimits = foundItem.maxLimit - foundItem.limit
+    foundItem.remainlimits = foundItem.maxlimit - foundItem.limit
     res.json({ limit: foundItem.limit, remainLimits: foundItem.remainlimits, unlimitedd: foundItem.unlimited });
    } else {
     foundItem.limit = 0;
@@ -563,12 +563,12 @@ app.post('/updateCodeLimit/:platform', async (req, res) => {
    } else {
     if (newLimit <= 10) {
      codeObject.limit = newLimit;
-     codeObject.remainlimits = codeObject.maxLimit - newLimit
+     codeObject.remainlimits = codeObject.maxlimit - newLimit
 
      saveToJsonFile(data, 'limits_download.json');
      writeDataToDatabase(data, 'sessionCode')
 
-     res.status(200).json({ success: true, limit: newLimit, maxLimit: codeObject.maxLimit });
+     res.status(200).json({ success: true, limit: newLimit, maxLimit: codeObject.maxlimit });
     } else {
      // res.status(304).json({ error: 'Limit sudah mencapai batas maksimum' });
      res.status(203).json({ message: 'limit sudah tercapai!', limit: currentLimit })
@@ -603,7 +603,7 @@ app.post('/generate_code/:platform', async (req, res) => {
   "code": randomCode,
   "limit": 0,
   "date": formattedDate,
-  "maxLimit": 10,
+  "maxlimit": 10,
   "name": "",
   "unlimited": 0,
   "remainlimits": 10,
