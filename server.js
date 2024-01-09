@@ -75,8 +75,8 @@ async function writeDataToDatabase(jsonData, tableName) {
   for (const data of jsonData) {
       console.log(data)
    const query = {
-    text: 'INSERT INTO sessionCode(platform, code, "limit", date, maxLimit, name, unlimited, remainlimits) VALUES($1, $2, $3, $4, $5, $6, $7, $8)',
-    values: [data.platform, data.code, data.limit, data.date, data.maxLimit, data.name, data.unlimited, data.remainlimits],
+    text: 'INSERT INTO sessionCode(platform, code, "limit", date, maxlimit, name, unlimited, remainlimits) VALUES($1, $2, $3, $4, $5, $6, $7, $8)',
+    values: [data.platform, data.code, data.limit, data.date, data.maxlimit, data.name, data.unlimited, data.remainlimits],
    };
 
    await client.query(query);
@@ -118,7 +118,7 @@ async function getData(tableName, type) {
           code VARCHAR(255),
           "limit" INT,
           date VARCHAR(255),
-          maxLimit INT,
+          maxlimit INT,
           name VARCHAR(255),
           unlimited INT,
           remainlimits INT
@@ -463,9 +463,9 @@ app.post('/manageLimit', async (req, res) => {
     message = `Set nama Successfully`
    }
    if (option == "set") {
-    codeObject.maxLimit = (configData.maxLimit) ? parseInt(configData.maxLimit) : codeObject.maxLimit;
-    codeObject.remainlimits = codeObject.maxLimit - codeObject.limit
-    message = `Set MaxLimit to ${codeObject.maxLimit} Successfully`
+    codeObject.maxlimit = (configData.maxlimit) ? parseInt(configData.maxlimit) : codeObject.maxlimit;
+    codeObject.remainlimits = codeObject.maxlimit - codeObject.limit
+    message = `Set MaxLimit to ${codeObject.maxlimit} Successfully`
    }
 
    await writeDataToDatabase(data, 'sessionCode')
