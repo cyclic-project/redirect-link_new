@@ -11,13 +11,13 @@ const app = express();
 const port = 3000;
 const host = '0.0.0.0';
 
-app.use(express.json());
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Replace your_frontend_port with the actual port your frontend is running on
-    res.setHeader('Access-Control-Allow-Methods', '*');
-    // res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
+app.use(express.json()).use(cors());
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*'); // Replace your_frontend_port with the actual port your frontend is running on
+//     res.setHeader('Access-Control-Allow-Methods', '*');
+//     // res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//     next();
+// });
 // app.use(cors({
 //   origin: ['https://downloader.marsell.tech', 'http://localhost:3000'], 
 //   methods: ['GET', 'POST'],
