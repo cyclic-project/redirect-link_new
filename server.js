@@ -533,7 +533,7 @@ app.post('/getLimit/:platform', async (req, res) => {
    saveToJsonFile(data, 'limits_download.json');
    // writeDataToDatabase(data, 'sessionCode')
    
-   await axios.post(`https://youtubedownloader10.azurewebsites.net/backend/syncDb`)
+   // await axios.post(`https://youtubedownloader10.azurewebsites.net/backend/syncDb`)
   } else {
    res.status(404).json({ error: 'Code not found' });
   }
@@ -561,7 +561,7 @@ app.post('/updateCodeLimit/:platform', async (req, res) => {
     codeObject.limit = 0;
     saveToJsonFile(data, 'limits_download.json')
     // writeDataToDatabase(data, 'sessionCode')
-    await axios.post(`https://youtubedownloader10.azurewebsites.net/backend/syncDb`)
+    // await axios.post(`https://youtubedownloader10.azurewebsites.net/backend/syncDb`)
     
     res.status(200).json({ success: true, unlimited: 1 })
    } else {
@@ -572,7 +572,7 @@ app.post('/updateCodeLimit/:platform', async (req, res) => {
      saveToJsonFile(data, 'limits_download.json');
      // writeDataToDatabase(data, 'sessionCode')
 
-     await axios.post(`https://youtubedownloader10.azurewebsites.net/backend/syncDb`)
+     // await axios.post(`https://youtubedownloader10.azurewebsites.net/backend/syncDb`)
 
      res.status(200).json({ success: true, limit: newLimit, maxLimit: codeObject.maxlimit });
     } else {
@@ -614,7 +614,7 @@ app.post('/generate_code/:platform', async (req, res) => {
   "unlimited": 0,
   "remainlimits": 10,
  });
- axios.post(`https://youtubedownloader10.azurewebsites.net/backend/syncDb`)
+ // axios.post(`https://youtubedownloader10.azurewebsites.net/backend/syncDb`)
 
  saveToJsonFile(dataLimits, 'limits_download.json');
  // writeDataToDatabase(dataLimits, 'sessionCode')
