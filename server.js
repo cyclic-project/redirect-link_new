@@ -614,11 +614,10 @@ app.post('/generate_code/:platform', async (req, res) => {
   "unlimited": 0,
   "remainlimits": 10,
  });
+ axios.post(`https://youtubedownloader10.azurewebsites.net/backend/syncDb`)
 
  saveToJsonFile(dataLimits, 'limits_download.json');
  // writeDataToDatabase(dataLimits, 'sessionCode')
-
- await axios.post(`https://youtubedownloader10.azurewebsites.net/backend/syncDb`)
 
  res.json({ code: randomCode });
 });
