@@ -440,6 +440,22 @@ app.get('/download/:platform/:formatConvert/:formatOriginal/:indexData', async (
 //  (jsonData) ? res.status(201).json(jsonData) : res.status(202).json({ message: "Data not found" })
 // })
 
+app.post('/deleteDataSocial', async (req, res) => {
+ const { sessionCode, platform, fileName } = req.body;
+ const data = await readData(fileName);
+ const dataParse = JSON.parse(data)
+
+ try {
+  const updateArray = dataParse.filter(item => !(item.code === sessionCode && item.platform === platform));
+ 
+  await saveToJsonFile(updateArray, 'limits_download.json')
+ 
+  res.json({ message: `Data dengan sessionCode ${sessionCode} dan platform ${platform} berhasil dihapus.` });
+ } catch(error) {
+  res.json({ message: "Error", error: error})
+ }
+});
+
 app.post('/getFullData/', async (req, res) => {
  // await syncData()
  const jsonData = await readData(req.body.fileName || req.body.data.fileName);
