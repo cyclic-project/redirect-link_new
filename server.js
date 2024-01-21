@@ -341,6 +341,7 @@ app.get('/getdata', async (req, res) => {
  // Baca file JSON yang telah disimpan di server 2
  try {
   const data = await readData('data_server2.json');
+  console.log(data)
   const jsonData = JSON.parse(data);
   console.log('Data berhasil dibaca di Server 2:', jsonData);
   res.json(jsonData);
