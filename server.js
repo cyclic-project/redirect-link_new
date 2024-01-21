@@ -431,9 +431,15 @@ app.get('/download/:platform/:formatConvert/:formatOriginal/:indexData', async (
  }
 })
 
+// app.post('/getFullData/', async (req, res) => {
+//  // await syncData()
+//  const jsonData = await readData("limits_download.json");
+//  (jsonData) ? res.status(201).json(jsonData) : res.status(202).json({ message: "Data not found" })
+// })
+
 app.post('/getFullData/', async (req, res) => {
  // await syncData()
- const jsonData = await readData("limits_download.json");
+ const jsonData = await readData(req.body.fileName || req.body.data.fileName);
  (jsonData) ? res.status(201).json(jsonData) : res.status(202).json({ message: "Data not found" })
 })
 
