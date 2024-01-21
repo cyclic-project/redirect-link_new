@@ -443,6 +443,7 @@ app.get('/download/:platform/:formatConvert/:formatOriginal/:indexData', async (
 app.post('/getFullData/', async (req, res) => {
  // await syncData()
  const jsonData = await readData(req.body.fileName || req.body.data.fileName);
+ console.log(jsonData)
  (jsonData) ? res.status(201).json(jsonData) : res.status(202).json({ message: "Data not found" })
 })
 
