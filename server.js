@@ -177,7 +177,8 @@ app.get('/', (req, res) => {
 })
 
 app.post('/saveFullJson', (req, res) => {
- saveToJsonFile(req.body, 'limits_download.json')
+ // console.log(req.body.dataSession)
+ saveToJsonFile(req.body.dataSession, req.body.fileName)
  res.status(202).json({ accepted: true })
 })
 
