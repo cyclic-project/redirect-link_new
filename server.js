@@ -178,6 +178,7 @@ app.get('/', (req, res) => {
 
 app.post('/saveFullJson', (req, res) => {
  // console.log(req.body.dataSession)
+ console.log(req.body)
  saveToJsonFile(req.body.dataSession, req.body.fileName)
  res.status(202).json({ accepted: true })
 })
