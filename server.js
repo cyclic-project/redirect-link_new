@@ -272,6 +272,42 @@ const updateData = async (newPath, newUrl, updatePath, footerBoleaan) => {
  }
 };
 
+// app.put('/updateData/:path', async (req, res) => {
+//  const { path: updatePath } = req.params;
+//  const { path: newPath, url, footerCheckbox } = req.body;
+
+//  // Update data menggunakan fungsi yang telah dibuat
+//  try {
+//   // Lakukan validasi di sini sebelum memanggil fungsi updateData
+//   const data = await readData('data_server2.json');
+//   const dataArray = JSON.parse(data);
+  
+//   let blockIt;
+//   dataArray.forEach(item => {
+//    if (item.path === `/${updatePath}`) {
+//     if (item.footer === footerCheckbox) {
+//       return res.status(409).json({ error: 'No Data Changes, reback', codeError: 101 });
+//     }
+//    }
+//   });
+   
+//   if (blockIt === "1") {
+//     const newPathExists = dataArray.some(item => item.path === newPath);
+//     if (newPathExists) {
+//      return res.status(409).json({ error: 'New path already exists', codeError: 101 });
+//     }
+//   }
+
+//   // Panggil fungsi updateData jika validasi berhasil
+//   await updateData(newPath, url, updatePath, footerCheckbox);
+
+//   res.status(200).json({ message: 'Data updated successfully' });
+//  } catch (error) {
+//   console.error(error);
+//   res.status(500).json({ error: 'Internal Server Error' });
+//  }
+// });
+
 app.put('/updateData/:path', async (req, res) => {
  const { path: updatePath } = req.params;
  const { path: newPath, url, footerCheckbox } = req.body;
@@ -282,29 +318,25 @@ app.put('/updateData/:path', async (req, res) => {
   const data = await readData('data_server2.json');
   const dataArray = JSON.parse(data);
   
-  let blockIt;
   dataArray.forEach(item => {
-   if (item.path === `/${updatePath}`) {
-    if (item.footer === footerCheckbox) {
-      return res.status(409).json({ error: 'No Data Changes, reback', codeError: 101 });
+   if (item.path == `/${updatePath}`) {
+    if (item.path == newPath) {
+     if (item.footer === footerCheckbox) {
+      return res.json({ error: 'No Data Changes, reback', codeError: 406 });
+     }
     }
    }
+   if (item.path == newPath) {
+    return res.json({ error: 'New path already exists', codeError: 409 });
+   }
   });
-   
-  if (blockIt === "1") {
-    const newPathExists = dataArray.some(item => item.path === newPath);
-    if (newPathExists) {
-     return res.status(409).json({ error: 'New path already exists', codeError: 101 });
-    }
-  }
 
-  // Panggil fungsi updateData jika validasi berhasil
   await updateData(newPath, url, updatePath, footerCheckbox);
 
   res.status(200).json({ message: 'Data updated successfully' });
  } catch (error) {
-  console.error(error);
-  res.status(500).json({ error: 'Internal Server Error' });
+  // console.error(error);
+  // res.status(500).json({ error: 'Internal Server Error' });
  }
 });
 
