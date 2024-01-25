@@ -317,19 +317,31 @@ app.put('/updateData/:path', async (req, res) => {
   // Lakukan validasi di sini sebelum memanggil fungsi updateData
   const data = await readData('data_server2.json');
   const dataArray = JSON.parse(data);
-  
+
+  var blockMessage;
+
   dataArray.forEach(item => {
    if (item.path == `/${updatePath}`) {
     if (item.path == newPath) {
      if (item.footer === footerCheckbox) {
-      return res.json({ error: 'No Data Changes, reback', codeError: 406 });
+      blockMessage = `error: 'No Data Changes, reback', codeError: 406`
      }
     }
    }
    if (item.path == newPath) {
-    return res.json({ error: 'New path already exists', codeError: 409 });
+    blockMessage = `error: 'New path already exists', codeError: 409`
+    // blockMessage.push(`{ error: 'New path already exists', codeError: 409 }`)
+    // return res.json({ error: 'New path already exists', codeError: 409 });
    }
   });
+
+  if (blockMessage) {
+   let [textWithoutNumbers, numbers] = blockMessage.match(/([a-zA-Z\s:']+)|(\d+)/g).reduce(([text, nums], match) => isNaN(match) ? [text + match, nums] : [text, [...nums, Number(match)]], ["", []]); 
+
+   var error = `${textWithoutNumbers.trim()}`
+   const codeError = numbers[0]
+   return res.json({ error, codeError })
+  }
 
   await updateData(newPath, url, updatePath, footerCheckbox);
 
