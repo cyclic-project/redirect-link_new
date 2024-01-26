@@ -15,7 +15,7 @@ app.use(express.json()).use(cors());
 // app.use((req, res, next) => {
 //     res.setHeader('Access-Control-Allow-Origin', '*'); // Replace your_frontend_port with the actual port your frontend is running on
 //     res.setHeader('Access-Control-Allow-Methods', '*');
-//     // res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//     // res.setHeader('Access-Control-Allow-Headers', '*');
 //     next();
 // });
 // app.use(cors({
