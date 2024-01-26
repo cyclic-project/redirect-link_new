@@ -221,25 +221,26 @@ app.post('/writedata', async (req, res) => {
 });
 
 app.post('/deletedata', async (req, res) => {
-  const dataToDelete = req.body;
+ const dataToDelete = req.body;
 
-  try {
-    // Baca file JSON yang telah disimpan di server 2
-    const data = await readData('data_server2.json');
-    let jsonData = JSON.parse(data);
+ try {
+  // Baca file JSON yang telah disimpan di server 2
+  const data = await readData('data_server2.json');
+  let jsonData = JSON.parse(data);
 
-    // Filter data berdasarkan path yang akan dihapus
-    jsonData = jsonData.filter(item => item.path !== dataToDelete.path);
+  // Filter data berdasarkan path yang akan dihapus
+  jsonData = jsonData.filter(item => item.path !== dataToDelete.path);
 
-    // Simpan data yang telah dihapus kembali ke dalam file JSON
-    await saveToJsonFile(jsonData, 'data_server2.json');
+  // Simpan data yang telah dihapus kembali ke dalam file JSON
+  await saveToJsonFile(jsonData, 'data_server2.json');
 
-    console.log(`Data dengan path ${dataToDelete.path} berhasil dihapus di Server 2`);
-    res.send(`Data dengan path ${dataToDelete.path} berhasil dihapus di Server 2`);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Terjadi kesalahan saat menghapus data di Server 2');
-  }
+  console.log(`Data dengan path ${dataToDelete.path} berhasil dihapus di Server 2`);
+  // res.send(`Data dengan path ${dataToDelete.path} berhasil dihapus di Server 2`);
+  res.json({ message: `Data dengan path ${dataToDelete.path} berhasil dihapus di Server 2`, code: 200 })
+ } catch (error) {
+  console.error(error);
+  res.status(500).send('Terjadi kesalahan saat menghapus data di Server 2');
+ }
 });
 
 const updateData = async (newPath, newUrl, updatePath, footerBoleaan) => {
