@@ -666,7 +666,7 @@ function codeExists(code, platform, jsonData) {
 app.post('/generate_code/:platform', async (req, res) => {
  const limitsData = await readData('limits_download.json')
  const dataLimits = JSON.parse(limitsData);
- const randomCode = generateRandomCode();
+ const randomCode = generateRandomCode(20);
  const currentDate = new Date();
  const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
 
@@ -692,10 +692,10 @@ app.post('/generate_code/:platform', async (req, res) => {
  res.json({ code: randomCode });
 });
 
-function generateRandomCode() {
+function generateRandomCode(length) {
  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
  let randomCode = '';
- for (let i = 0; i < 30; i++) {
+ for (let i = 0; i < length; i++) {
   randomCode += characters.charAt(Math.floor(Math.random() * characters.length));
  }
  return randomCode;
